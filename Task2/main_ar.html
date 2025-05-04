@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <title>خادم الويب - ENCS3320</title>
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <meta name="theme-color" content="#ff0000">
+</head>
+<body>
+
+    <h1>مرحباً بكم في خادم الويب - ENCS3320 - شبكات الحاسوب</h1>
+    <h2></h2>
+
+    <!-- Team Member Section -->
+    <div class="team-table">
+        <div class="team-box">
+            <img src="./images/malakphoto.png" alt="صورة العضو الأول">
+            <h3>ملك ملحم</h3>
+            <p>الرقم الجامعي: 1220031</p>
+            <div class="description">
+                <p><strong>التخصص:</strong> هندسة الحاسوب</p>
+                <p><strong>المشاريع:</strong> تصميم معالج دورة واحدة، مجمع محسن باستخدام أداة Electric، نظام جدولة المعالج، حل مشكلة تجميع الحاويات باستخدام MIPS.</p>
+                <p><strong>المهارات:</strong> مهارات تواصل ممتازة، مسؤولة ويمكن الاعتماد عليها، متعاونة، إدارة وقت رائعة.</p>
+                <p><strong>الهوايات:</strong> القراءة، الرسم، الخَبز</p>
+            </div>
+        </div>
+
+        <div class="team-box">
+            <img src="./images/taimaphoto.png" alt="صورة العضو الثاني">
+            <h3>تيما ناصر</h3>
+            <p>الرقم الجامعي: 1222640</p>
+            <div class="description">
+                <p><strong>التخصص:</strong> هندسة الحاسوب</p>
+                <p><strong>المشاريع:</strong> ملف أعمال تطوير واجهات أمامية، أدوات سطر أوامر لينكس، محلل DNS وHTTP، نظام عميل-خادم باستخدام المقابس (Sockets).</p>
+                <p><strong>المهارات:</strong> قيادة قوية، التحدث أمام الجمهور، حل المشكلات، إدارة الوقت، العمل الجماعي والتواصل الممتاز.</p>
+                <p><strong>الهوايات:</strong> الرسم، تنظيم الفعاليات، تعلم اللغات</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Chapter Topic Section -->
+    <div class="chapter-topic">
+        <h2 class="section-heading">أمن الشبكات</h2>
+
+        <h3>مقدمة</h3>
+        <p>
+            يتضمن أمن الشبكات حماية الأنظمة من الوصول غير المصرح به أو سوء الاستخدام أو الأضرار. نظرًا لأن الإنترنت لم يُصمم بأمان قوي، فإن الثغرات شائعة ويجب معالجتها في جميع طبقات الاتصال.
+        </p>
+        <ul>
+            <li><em>فهم كيفية حدوث الهجمات</em></li>
+            <li><em>تصميم الدفاعات والإجراءات المضادة</em></li>
+            <li><em>بناء بنى شبكية تراعي الأمان</em></li>
+        </ul>
+
+        <h3>تهديدات البرمجيات الخبيثة</h3>
+        <p>
+            البرمجيات الخبيثة هي برمجيات تهدف إلى إلحاق الضرر بالحواسيب أو تعطيلها. من الأنواع الشائعة:
+        </p>
+        <ol>
+            <li><strong>الفيروس:</strong> يحتاج إلى تفاعل المستخدم للانتشار، غالباً عبر مرفقات البريد الإلكتروني.</li>
+            <li><strong>الدودة:</strong> تنتشر تلقائياً عبر الأنظمة الضعيفة.</li>
+            <li><strong>برامج التجسس:</strong> تسجل نشاطات المستخدم سراً وترسل البيانات للمهاجمين.</li>
+        </ol>
+        <p>قد تُستخدم الأجهزة المصابة ضمن شبكات روبوتية (botnets) لتنفيذ هجمات واسعة النطاق.</p>
+
+        <h3>هجمات حجب الخدمة (DoS)</h3>
+        <p>
+            تغمر هذه الهجمات الهدف (مثل خادم أو شبكة) بكمية هائلة من البيانات مما يجعله غير قابل للاستخدام. تشمل العملية:
+        </p>
+        <ol>
+            <li>اختيار الهدف</li>
+            <li>إصابة عدة أجهزة</li>
+            <li>إطلاق الفيض من الأجهزة المصابة</li>
+        </ol>
+        <img src="./images/DDoS_pic.jpg" alt="رسم توضيحي لهجوم DoS" class="topic-img">
+
+        <h3>اعتراض الحزم</h3>
+        <p>
+            في الشبكات المشتركة، يمكن للمهاجمين استخدام أدوات التقاط الحزم (packet sniffing) لالتقاط بيانات مثل كلمات المرور. أدوات مثل Wireshark تتيح تحليل عميق لحركة الشبكة.
+        </p>
+        <img src="./images/packet_sniffing.jpg" alt="اعتراض الحزم" class="topic-img">
+
+        <h3>انتحال عنوان IP</h3>
+        <p>
+            في هذا النوع من الهجمات، يقوم المهاجم بتزوير عنوان IP الخاص بالمرسل لإخفاء هويته أو إعادة توجيه الردود. يُستخدم ذلك غالباً في هجمات DoS أو هجمات رجل في المنتصف.
+        </p>
+        <img src="./images/IPspoofing_pic.jpg" alt="انتحال IP" class="topic-img">
+    </div>
+
+    <!-- Useful Links -->
+    <div class="links-section">
+        <h3>روابط مفيدة</h3>
+        <div class="button-links">
+            <a href="https://gaia.cs.umass.edu/kurose_ross/index.php" class="link-button" target="_blank">موقع الكتاب</a>
+            <a href="https://www.birzeit.edu/" class="link-button" target="_blank">جامعة بيرزيت</a>
+            <a href="mySite_1220031_ar.html" class="link-button">صفحتي المحلية</a>
+        </div>
+    </div>
+
+</body>
+</html>
