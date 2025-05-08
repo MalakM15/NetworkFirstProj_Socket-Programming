@@ -120,7 +120,7 @@ def handle_request(connection_socket, client_address, request):
 
     # Handle GET requests for other files 
     if file_path in ["", "index.html", "en"]:
-        file_path = "/main_en.html"  # Default to main_en.html 
+        file_path = "main_en.html"  # Default to main_en.html 
     elif file_path == "ar":
         file_path = "main_ar.html"  # Serve the Arabic version if requested
 
@@ -130,15 +130,20 @@ def handle_request(connection_socket, client_address, request):
 
 
     # If the file exists, send it to the client
-    if os.path.isfile(file_path):
+    if os.path.isfile(full_path):
         print ("found file @@")
-        file_extension = file_path.split(".")[-1]  # Get the file extension
-        content_type = content_types.get(file_extension, "text/plain")  # Get content type
-
+        file_extension = full_path.split(".")[-1]  # Get the file extension
+        #content_type = content_types.get(file_extension, "text/plain")  # Get content type
+        content_type = content_types.get(file_extension, "application/octet-stream")
         # Open the file and send its content
-        with open(file_path, 'r') as f:
-            content = f.read()
-        send_response(connection_socket, "200 OK", content_type, content)
+        if file_extension in ["png", "jpg", "jpeg"]:
+            with open(full_path, 'rb') as f:
+                content = f.read()
+            send_response(connection_socket, "200 OK", content_type, content)
+        else:
+           with open(full_path, 'r', encoding='utf-8') as f:
+               content = f.read()
+           send_response(connection_socket, "200 OK", content_type, content)
     else:
         # If the file doesn't exist, send a 404 Not Found error with a custom error page
         #with open("error.html", "r", encoding="utf-8") as f:
