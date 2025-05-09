@@ -127,7 +127,9 @@ def handle_request(connection_socket, client_address, request):
         content_type = content_types.get(file_extension, "text/plain")  # Get content type
 
         # Open the file and send its content
-        with open(file_path, 'r') as f:
+        mode = 'rb' 
+        #if file_extension in ["png", "jpg"] else 'r'
+        with open(file_path, mode) as f:
             content = f.read()
         send_response(connection_socket, "200 OK", content_type, content)
     else:
