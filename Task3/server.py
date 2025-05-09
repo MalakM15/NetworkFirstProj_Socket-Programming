@@ -139,7 +139,7 @@ def start_round():
 
     # Start UDP guessing listen
     Thread(target=handle_guesses, args=(secret_number,)).start()
-
+    time.sleep(game_duration + 5)  # Wait to finish and start new round 
 
 def main():
         
