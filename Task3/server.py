@@ -27,8 +27,12 @@ UDPPort = 6001
 udp_server_socket = socket(AF_INET, SOCK_DGRAM) #UDP
 udp_server_socket.bind((serverIP, UDPPort))
 
+active_clients = {}
+complete_flag = False
+
 def generate_random_num():
     return random.randint(*GUESS_RANGE)
+
 def handle_client(connection, address):
     try:
         connection.send(b"Welcome to the game! Please send: JOIN <your_name>\n")
@@ -46,9 +50,23 @@ def handle_client(connection, address):
             connection.send(b"Invalid response. Connection closing.\n")
             connection.close()
     except:
+        if connection in active_clients:
+            print(f"{active_clients[connection]} disconnected from the game!!.")
+            del active_clients[connection]
+            for conn in active_clients:
+                try:
+                    conn.send(f"{active_clients[connection]} has decided to leave you alone in the game.\n".encode())
+                except:
+                    continue
         connection.close()
+
+
 def handle_guesses(secret_number):
-    while True:
+
+    global complete_flag
+    end_time = time.time() + game_duration
+    while time.time() < end_time:
+    
         try:
             udp_data, client_addr = udp_server_socket.recvfrom(1024)
             guess_msg = udp_data.decode().strip()
@@ -67,14 +85,42 @@ def handle_guesses(secret_number):
                 udp_server_socket.sendto(b"Lower\n", client_addr)
             else:
                 udp_server_socket.sendto(b"Correct!\n", client_addr)
- #               game_result(client_addr)
-                break
+                complete_flag = True
+                game_result(client_addr) #the winner
+                return
+
         except:
             continue
+    if not complete_flag:
+        for connection in active_clients:
+            connection.send(b"Time is up! No Winner.\n") 
+        tcp_server_socket.close()
+        udp_server_socket.close()       
 
-#def game_result():
+def accept_clients():
+    while True:
+        conn, addr = tcp_server_socket.accept()
+        Thread(target=handle_client, args=(conn, addr)).start()
 
-active_clients = {}
+
+def game_result(winner_address):
+    winner_name = None
+    for connection, name in active_clients.items(): ##to find the winner IP
+        if connection.getpeername()[0] == winner_address[0]:
+           winner_name = name
+           break
+    if winner_name:       
+        print_result = f" GAME RESULT\n Target number was: {secret_number}\n Winner:{winner_name}\n".encode()
+    else :
+        print_result = f"GAME Completed\n Target number was: {secret_number}\n ".encode()
+    #
+    for connection in active_clients:
+        connection.send(print_result)
+        connection.close()
+    tcp_server_socket.close()
+    udp_server_socket.close()
+    print(f"Game Completed. Winner:{winner_name}.\n")
+
 def start_round():
     global guess_start_time
 
@@ -86,11 +132,20 @@ def start_round():
     for conn in active_clients:
         conn.send(start_msg)  #send the start messege for all clients
 
+    global secret_number 
     secret_number = generate_random_num()
     print(f"Secret number is {secret_number}")
     guess_start_time = time.time()
 
     # Start UDP guessing listen
     Thread(target=handle_guesses, args=(secret_number,)).start()
-print("Connection established. Waiting for players...")
-Thread(target=start_round).start()    
+
+
+def main():
+        
+        print("Connection established. Waiting for players...")
+        Thread(target=accept_clients).start()
+        Thread(target=start_round).start()     
+
+if __name__ == "__main__":
+    main()        
