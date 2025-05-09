@@ -9,6 +9,10 @@ import os
 #student ID =1220031
 Port = 9901  # socket server port number
 
+# Get base directory and static folder path
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+STATIC_DIR = os.path.join(BASE_DIR, "static")
+
 def run_server():
     serverSocket = socket(AF_INET,SOCK_STREAM)
     serverSocket.bind(('', Port))
@@ -21,7 +25,7 @@ def run_server():
         request = connection_socket.recv(1024).decode('utf-8')  # Receive the request from the client
 
         if not request.strip():  # Skip if request is empty or whitespace
-            print("⚠️ Empty request received, skipping.")
+            print(" Empty request received, skipping.")
             connection_socket.close()
             continue
 
@@ -52,9 +56,9 @@ def send_response(connectionSocket, status, content_type, content):
 
        print(f"Response sent: {status} | Content-Type: {content_type}")
     except ConnectionAbortedError:
-           print("⚠️ Client closed the connection before the server could send the response.")
+           print("! Client closed the connection before the server could send the response.")
     except Exception as e:
-           print(f"⚠️ Unexpected error while sending response: {e}")
+           print(f"! Unexpected error while sending response: {e}")
 def handle_request(connection_socket, client_address, request):
     content_types = {
         "html": "text/html",
@@ -120,12 +124,17 @@ def handle_request(connection_socket, client_address, request):
     elif file_path == "ar":
         file_path = "main_ar.html"  # Serve the Arabic version if requested
 
-    # If the file exists, send it to the client
-    if os.path.isfile(file_path):
-        print ("found file @@")
-        file_extension = file_path.split(".")[-1]  # Get the file extension
-        content_type = content_types.get(file_extension, "text/plain")  # Get content type
+    # Clean up path and get full file path
+    file_path = file_path.lstrip('/')  # remove leading slash
+    full_path = os.path.join(STATIC_DIR, file_path)
 
+
+    # If the file exists, send it to the client
+    if os.path.isfile(full_path):
+        print ("found file @@")
+        file_extension = full_path.split(".")[-1]  # Get the file extension
+        #content_type = content_types.get(file_extension, "text/plain")  # Get content type
+        content_type = content_types.get(file_extension, "application/octet-stream")
         # Open the file and send its content
         mode = 'rb' 
         #if file_extension in ["png", "jpg"] else 'r'
@@ -134,10 +143,6 @@ def handle_request(connection_socket, client_address, request):
         send_response(connection_socket, "200 OK", content_type, content)
     else:
         # If the file doesn't exist, send a 404 Not Found error with a custom error page
-        #with open("error.html", "r", encoding="utf-8") as f:
-        #    error_content = f.read()
-            # the error page with the client's IP and port
-            #error_content = error_content.replace('<p id="client-info"></p>', f"<p>Client's IP: {client_address[0]}</p><p>Client's Port: {client_address[1]}</p>")
         #send_response(connection_socket, "404 Not Found", "text/html", error_content)
         content = """
         <!DOCTYPE html>
