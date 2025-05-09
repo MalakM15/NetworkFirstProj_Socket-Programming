@@ -25,7 +25,7 @@ def run_server():
         request = connection_socket.recv(1024).decode('utf-8')  # Receive the request from the client
 
         if not request.strip():  # Skip if request is empty or whitespace
-            print("⚠️ Empty request received, skipping.")
+            print(" Empty request received, skipping.")
             connection_socket.close()
             continue
 
@@ -56,9 +56,9 @@ def send_response(connectionSocket, status, content_type, content):
 
        print(f"Response sent: {status} | Content-Type: {content_type}")
     except ConnectionAbortedError:
-           print("⚠️ Client closed the connection before the server could send the response.")
+           print("! Client closed the connection before the server could send the response.")
     except Exception as e:
-           print(f"⚠️ Unexpected error while sending response: {e}")
+           print(f"! Unexpected error while sending response: {e}")
 def handle_request(connection_socket, client_address, request):
     content_types = {
         "html": "text/html",
@@ -146,10 +146,6 @@ def handle_request(connection_socket, client_address, request):
            send_response(connection_socket, "200 OK", content_type, content)
     else:
         # If the file doesn't exist, send a 404 Not Found error with a custom error page
-        #with open("error.html", "r", encoding="utf-8") as f:
-        #    error_content = f.read()
-            # the error page with the client's IP and port
-            #error_content = error_content.replace('<p id="client-info"></p>', f"<p>Client's IP: {client_address[0]}</p><p>Client's Port: {client_address[1]}</p>")
         #send_response(connection_socket, "404 Not Found", "text/html", error_content)
         content = """
         <!DOCTYPE html>
