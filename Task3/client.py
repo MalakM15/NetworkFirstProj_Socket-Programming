@@ -1,3 +1,7 @@
+#Task3
+#BY:
+#Taima Nasser && Malak Milhem
+
 import socket
 import threading
 import time
@@ -7,13 +11,13 @@ TCPPort = 6000
 UDPPort = 6001
 game_duration = 60
 
-# Client state management
+#state management
 game_active = False
 game_over = False
 
-# Create UDP socket for receiving feedback
+# create UDP socket for receiving feedback
 UDP_client_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-UDP_client_socket.bind(("0.0.0.0", 0))  # Bind to any available port
+UDP_client_socket.bind(("0.0.0.0", 0))  # bind to any available port
 
 def print_header(player_name):
     print(f"\n{'='*30}")
@@ -103,7 +107,7 @@ def send_guesses():
                     UDP_client_socket.sendto(guess.encode(), (serverIP, UDPPort))
                 else:
                     print("Invalid input. Please enter a number.")
-                print("="*30)  # Divider after guess input
+                print("="*30)  
             else:
                 time.sleep(1)  # Wait for the game to start
         except Exception as e:
@@ -114,14 +118,14 @@ def main():
         tcp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         tcp_socket.connect((serverIP, TCPPort))
 
-        # Register player with username handling
+        # register player with username handling
         username = register_player(tcp_socket)
 
         # Start TCP and UDP feedback listeners
         threading.Thread(target=listen_for_feedback, args=(tcp_socket,), daemon=True).start()
         threading.Thread(target=listen_for_udp_feedback, daemon=True).start()
 
-        # Start the guessing function in the main thread
+        # Start the guessing function
         send_guesses()
 
     except socket.error as e:
@@ -133,3 +137,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
