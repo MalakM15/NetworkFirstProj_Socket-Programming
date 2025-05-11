@@ -1,9 +1,12 @@
+#Task3
+#BY:
+#Taima Nasser && Malak Milhem
 import socket
 import threading
 import random
 import time
 
-# Configuration
+
 serverIP = "127.0.0.1"
 TCPPort = 6000
 UDPPort = 6001
@@ -13,8 +16,8 @@ game_duration = 60
 GUESS_RANGE = (1, 100)
 WAIT_TIME = 10  # seconds to wait after the second player joins
 
-active_clients = {}  # Map: socket -> player name
-udp_mapping = {}     # Map: UDP address -> player name
+active_clients = {}  #  socket -> player name
+udp_mapping = {}     # UDP address -> player name
 game_active = False
 complete_flag = False
 secret_number = random.randint(GUESS_RANGE[0], GUESS_RANGE[1])
@@ -26,7 +29,7 @@ tcp_server_socket.bind((serverIP, TCPPort))
 udp_server_socket.bind((serverIP, UDPPort))
 tcp_server_socket.listen(5)
 
-# Display server start message
+# print server start message
 print(f"Server started on {serverIP}: TCP {TCPPort}, UDP {UDPPort}")
 print("Connection established. Waiting for players...")
 
@@ -67,7 +70,7 @@ def handle_client(conn, addr):
             conn.send(b"Invalid join command. Disconnecting.\n")
             conn.close()
 
-        # Monitor for client disconnection
+        # monitor client disconnection
         while True:
             try:
                 data = conn.recv(1024)
@@ -82,7 +85,7 @@ def handle_client(conn, addr):
         handle_disconnection(conn)
 
 def handle_disconnection(conn):
-    """Handles client disconnection gracefully"""
+    """Handles client disconnection"""
     global game_active
     if conn in active_clients:
         player_name = active_clients[conn]
@@ -117,7 +120,7 @@ def start_round():
     secret_number = random.randint(GUESS_RANGE[0], GUESS_RANGE[1])
     print(f"Secret number is {secret_number}")
 
-    # Display the number of players before the game starts
+    # send the number of players before the game starts
     print(f"Starting game with {len(active_clients)} players...\n")
 
     start_msg = f"Game started with {len(active_clients)} players.\nYou have 60 seconds to guess the number ({GUESS_RANGE[0]}-{GUESS_RANGE[1]})!\n"
@@ -134,10 +137,10 @@ def handle_guesses():
             guess_data, client_addr = udp_server_socket.recvfrom(1024)
             guess = guess_data.decode().strip()
 
-            # Correctly map UDP address to player name
+            # map UDP address to player name
             if client_addr not in udp_mapping:
                 for conn, name in active_clients.items():
-                    # Map using the player's TCP socket address to ensure accuracy
+                    # map with the player's TCP socket address
                     if conn.getpeername()[0] == client_addr[0]:
                         udp_mapping[client_addr] = name
                         break
@@ -145,13 +148,13 @@ def handle_guesses():
             guess = int(guess)
             player_name = udp_mapping.get(client_addr, "Unknown")
 
-            # Handle out-of-range guess
+            # Handle out of range guess
             if guess < GUESS_RANGE[0] or guess > GUESS_RANGE[1]:
                 print(f"Send Warning to {player_name}")
                 udp_server_socket.sendto(b"Warning: Out of the range, miss your chance\n", client_addr)
                 continue
 
-            # Provide feedback
+            #  feedback
             if guess < secret_number:
                 udp_server_socket.sendto(b"Higher\n", client_addr)
             elif guess > secret_number:
